@@ -35,7 +35,7 @@ AI's language of choice is Python, and Tensorflow was written in Python. No surp
 
 1. Buy a video security camera. There are many types of security cameras out there. The setup instructions I am providing here only work for Xiaomi Mijia camera, as that is the one that I purchased. In theory you can buy any camera and as long as you get the camera to save the videos into a NAS storage, that's ok.
 
-2.
+2. 
 
 
 
