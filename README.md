@@ -12,23 +12,28 @@ The goal of this project is to create an application that processes all the vide
 
 ## Sources I have used
 
-To be able to build something like a smart camera, you need to stand on the should of giants.
+To be able to build something like a smart camera, you need to stand on the shoulder of giants.
+First port of call for me was 
 
-### First port of call for me was Youtube with its many videos teaching tensorflow and openCV.
+### Youtube with its many videos teaching tensorflow and openCV.
 
 I followed this series:
 
-Tensorflow Object Detection API Tutorial Part 1
+Tensorflow Object Detection API Tutorial Part 1 - https://www.youtube.com/watch?v=COlbP62-B-U&t=121s
 
-https://www.youtube.com/watch?v=COlbP62-B-U&t=121s
+and 
+
+Train an Image Classifier in 3 Minutes - https://www.youtube.com/watch?v=qbFF1r4NGmA&t=14s
 
 ### Tensorflow Object Detection API
 
 https://github.com/tensorflow/models/tree/master/research/object_detection
 
-###  Another tutorial I read and was really helpful
+###  Train an Image Classifier in 3 Minutes - Tutorial
 
-This tutorial helped me getting introduced to image classification with Tensorflow and I used the tensorflow docker instance created by Macgyver as my starting point.
+https://askmacgyver.com/blog/tutorial/create-image-classifier
+
+This tutorial, alongside the youtube video, helped me getting introduced to image classification with Tensorflow and I used the tensorflow docker instance created by Macgyver as my starting point.
  
 https://askmacgyver.com/blog/tutorial/create-image-classifier
 
@@ -38,7 +43,6 @@ https://askmacgyver.com/blog/tutorial/create-image-classifier
 
 Tensorflow is incredibly powerful and comes with pre-built models that are quite capable to detect something as simple as a person. In fact it can do a lot more than that. The code written uses Tensorflow Object Detection API, which is still in ongoing development.
 https://github.com/tensorflow/models/tree/master/research/object_detection. As a starting point I used the object detection tutorial python script. 
-
 
 ### OpenCV
 
@@ -57,16 +61,20 @@ Slack is a messaging system used by software development teams around the world.
 
 AI's language of choice is Python, and Tensorflow was written in Python. No surprise why we need it.
 
-## SETUP
+### STEP 1 - BUY VIDEO SECURITY CAMERA and MEMORY STICK
 
-1. Buy a video security camera. There are many types of security cameras out there. The setup instructions I am providing here only work for Xiaomi Mijia camera, as that is the one that I purchased. In theory you can buy any camera and as long as you get the camera to save the videos into a NAS storage, that's ok.
+1. Buy a video security camera such as the Xiaomi Mijia Camera. There are many types of security cameras out there. The setup instructions I am providing here only work for Xiaomi Mijia camera, as that is the one that I purchased. In theory you can buy any camera and as long as you get the camera to save the videos into a NAS storage, that's ok.
+The camera doesn't come with a memory stick. In order for the NAS share feature to work you need a memory stick. In this case I recommend 16gb size.
 
-2. 
+### STEP 2 - CONFIGURE XIAOMI MIJIA CAMERA
 
+Download the MiHome app and setup the camera per instructions. Plenty of Youtube videos that help you on this. Here is one: https://www.youtube.com/watch?v=QXDv1RsccSs
+You need to create a NAS share somewhere in your network, to which the camera can upload any videos once motion is detected.
+In my home I setup a SMB share on a Raspberry Pi.
 
+### STEP 3 - RUN DOCKER CONTAINER
 
-
-
+Once you have the Xiaomi Mijia Camera installed and configured to dump all the videos into a NAS share, you are ready to start the process of setting up the docker container. But you need to install docker first. Don't know docker? Read this: https://docs.docker.com/get-started/
 
 1. Build docker container
 
