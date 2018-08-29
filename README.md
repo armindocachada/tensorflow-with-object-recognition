@@ -94,7 +94,7 @@ docker run -i -t -d -p 8888:8888 -v <NAS FOLDER WITH VIDEOS>:/data/videos/incomi
 
 Instead of relying on the Mihome app for receiving notifications it was decided to deliver notification straight to Slack under a specific channel.
 
-To try this demo, you need to create a Slack account and a private channel and generate a security token. Then you need to save this security token into config.ini using the config.ini.template file. Don't forget to rename it to config.ini. Don't forget to paste the channel id.
+To try this demo, you need to create a Slack account and a private channel and generate a security token. Then you need to save this security token into config.ini using the config.ini.template file. Don't forget to rename it to config.ini, and paste the channel id.
 
 
 ``` bash
@@ -105,7 +105,7 @@ channelId: a channel id
 
 ### STEP 5 - Understanding Tensorflow customisations ###
 
-To better understand the customisations made to the tensorflow object detection demo, lets use jupyter notebook:
+To better understand the customisations made to the tensorflow object detection demo, lets open a jupyter notebook:
 
 docker exec -it <CONTAINER ID> /bin/bash -c "export COLUMNS=tput cols; export LINES=tput lines; exec bash"
 
@@ -128,3 +128,61 @@ jupyter notebook --allow-root
 ```
 
 Copy the url given by the newly started notebook server and open it in a browser.
+
+Methods to look for:
+
+
+Whenever a person is detected in a video uploaded by the security camera, a method called notifySlack is called.
+This method uses the slack API to upload the video and an image to allow for quick identification of the security threat in the video.
+I used slack for speed of development. It comes with built-in security, as I can control the access to the channel to only the people I want to.
+It comes with a mobile app for android and ios, therefore I don't have to develop any app to make the notifications work.
+This is perfectly acceptable for a proof of concept and maybe some limited use at your home. 
+
+```python
+def notifySlack(plt, image_np):
+    plt.imsave("/data/plot.png", image_np)
+            
+    sc.api_call(
+      "chat.postMessage",
+      channel=channel_id,
+      text="Unidentified person detected in file={}".format(file)
+
+    )
+
+
+    with open('/data/plot.png', 'rb') as f:
+        sc.api_call(
+            "files.upload",
+            channels=channel_id,
+            filename='snapshot.png',
+            title='Detected Person',
+            initial_comment='Detected person by webcam. Is it anyone you know?',
+            file=io.BytesIO(f.read())
+        )
+
+    with open(file, 'rb') as f:
+        sc.api_call(
+            "files.upload",
+            channels=channel_id,
+            filename='$file',
+            title='Video with detected person',
+            initial_comment='Video with detected person',
+            file=io.BytesIO(f.read())
+        )
+```
+
+The way the object detection works, using the OpenCV library, we take sample video frames from a video file (not every single video frame because the video files have 20 frames per second!), and for each frame captured we call the run_inference_for_single_image(image_np, detection_graph) method. This method returns a dictionary with the results of the inference analysis. We use the SSD Inception v2 model( ssd_inception_v2_coco_2017_11_17), which already contains common objection detection classes, including Person which is the only detection class we are interested in this case. But its so easy to change it. Lets say you want to detect animals such as a Lion, you can modify the method below to only search for Lions. In order to reduce false positives, you can also increase the score from the default value of 0.5 to something higher if wished. From personal experimentation 0.5 worked well for me.
+
+```python
+def detectPerson(output_dict, category_index):
+    result = False
+    classes = output_dict['detection_classes']  
+    for i in range(len(classes)):
+        score = output_dict['detection_scores'][i]
+        label = category_index.get(classes[i])
+        if (score>0.5 and label['name'] == 'person' ):
+            result = True
+            break
+            
+    return result
+```
