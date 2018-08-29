@@ -202,7 +202,9 @@ def processVideoFile(file):
      
 ```
 
-We use the SSD Inception v2 model( ssd_inception_v2_coco_2017_11_17), which already contains common objection detection classes, including Person which is the only detection class we are interested in this case. But its so easy to change it. Lets say you want to detect animals such as a Lion, you can modify the method below to only search for Lions. In order to reduce false positives, you can also increase the score from the default value of 0.5 to something higher if wished. From personal experimentation 0.5 worked well for me.
+We use the SSD Inception v2 model( ssd_inception_v2_coco_2017_11_17), which already contains common objection detection classes, including **Person** which is the only detection class we are interested in this case. But its so easy to change it. 
+
+Lets say you are trying to create a smart wildlife camera and you want to detect animals such as a very rare **Lion**. You can modify the method below to only search for **Lions**. In order to reduce false positives, you can also increase the score from the default value of 0.5 to something higher if wished. From personal experimentation 0.5 worked well for me.
 
 ```python
 def detectPerson(output_dict, category_index):
