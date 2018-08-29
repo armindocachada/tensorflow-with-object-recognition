@@ -171,6 +171,10 @@ def notifySlack(plt, image_np):
         )
 ```
 
+![How a notification looks on slack](/assets/slack_screenshot_part1.png)
+![How a notification looks on slack](/assets/slack_screenshot_part2.png)
+
+
 The way the object detection works, using the OpenCV library, we take sample video frames from a video file (not every single video frame because the video files have 20 frames per second!), and for each frame captured we call the run_inference_for_single_image(image_np, detection_graph) method. This method returns a dictionary with the results of the inference analysis. 
 
 ```python
@@ -220,6 +224,4 @@ def detectPerson(output_dict, category_index):
     return result
 ```
 
-![How a notification looks on slack](/assets/slack_screenshot_part1.png)
-![How a notification looks on slack](/assets/slack_screenshot_part2.png)
 
