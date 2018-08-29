@@ -171,7 +171,38 @@ def notifySlack(plt, image_np):
         )
 ```
 
-The way the object detection works, using the OpenCV library, we take sample video frames from a video file (not every single video frame because the video files have 20 frames per second!), and for each frame captured we call the run_inference_for_single_image(image_np, detection_graph) method. This method returns a dictionary with the results of the inference analysis. We use the SSD Inception v2 model( ssd_inception_v2_coco_2017_11_17), which already contains common objection detection classes, including Person which is the only detection class we are interested in this case. But its so easy to change it. Lets say you want to detect animals such as a Lion, you can modify the method below to only search for Lions. In order to reduce false positives, you can also increase the score from the default value of 0.5 to something higher if wished. From personal experimentation 0.5 worked well for me.
+The way the object detection works, using the OpenCV library, we take sample video frames from a video file (not every single video frame because the video files have 20 frames per second!), and for each frame captured we call the run_inference_for_single_image(image_np, detection_graph) method. This method returns a dictionary with the results of the inference analysis. 
+
+```python
+
+
+def processVideoFile(file):
+     cap = cv2.VideoCapture(file)
+     totalFrameCount = cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
+    
+     if totalFrameCount == 0:
+            print "Video file={} not yet ready for processing. Skipping.".format(file)
+            return False
+        
+     print "Processing video file with {} frames".format( totalFrameCount)
+     
+     while True:
+        ret, image_np = cap.read()
+        currentFrame = cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)
+        print "Processing frame {} of {} for video file={}".format(currentFrame,totalFrameCount, file) 
+        if not ret:
+            break
+       
+      ...
+            
+        # skips frames as the rate of the camera is 20 fps
+        nextFrame = min(currentFrame + FRAMES_TO_SKIP, totalFrameCount)
+        cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, nextFrame)  
+     return True
+     
+```
+
+We use the SSD Inception v2 model( ssd_inception_v2_coco_2017_11_17), which already contains common objection detection classes, including Person which is the only detection class we are interested in this case. But its so easy to change it. Lets say you want to detect animals such as a Lion, you can modify the method below to only search for Lions. In order to reduce false positives, you can also increase the score from the default value of 0.5 to something higher if wished. From personal experimentation 0.5 worked well for me.
 
 ```python
 def detectPerson(output_dict, category_index):
