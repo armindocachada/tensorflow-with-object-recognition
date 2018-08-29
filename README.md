@@ -220,6 +220,6 @@ def detectPerson(output_dict, category_index):
     return result
 ```
 
-![How a notification looks on slack](/assets/slack_screenshot_part1.png")
-![How a notification looks on slack](/assets/slack_screenshot_part2.png")
+![How a notification looks on slack](/assets/slack_screenshot_part1.png)
+![How a notification looks on slack](/assets/slack_screenshot_part2.png)
 
