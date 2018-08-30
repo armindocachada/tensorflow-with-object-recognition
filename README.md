@@ -10,7 +10,7 @@ The goal for this experiment is to prove that leveraging the power of AI is easy
 
 We will create an application with Tensorflow and docker that can be deployed anywhere. This application will add the intelligence needed to a Xiaomi camera for proper security.
 
-What are you waiting for? Buy the camera and click on my Github project and get started.
+What are you waiting for? Buy the camera and click on my Github project(https://github.com/armindocachada/tensorflow-with-object-recognition) to get started.
 
 
 ## Sources I have used
