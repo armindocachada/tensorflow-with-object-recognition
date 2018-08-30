@@ -34,42 +34,42 @@ This tutorial, alongside the youtube video, helped me getting introduced to imag
  
 https://askmacgyver.com/blog/tutorial/create-image-classifier
 
-## Tools for this project
+# Tools for this project
 
-### Tensorflow
+## Tensorflow
 
 Tensorflow is incredibly powerful and comes with pre-built models that are quite capable to detect something as simple as a person. In fact it can do a lot more than that. The code written uses Tensorflow Object Detection API, which is still in ongoing development.
 https://github.com/tensorflow/models/tree/master/research/object_detection. As a starting point I used the object detection tutorial python script. 
 
-### OpenCV
+## OpenCV
 
 Second tool used is OpenCV.
 OpenCV (Open Source Computer Vision Library) is an open source computer vision and machine learning software library. OpenCV Is used to process each frame of the video and apply a Tensorflow model.
 
-### Docker
+## Docker
 
 Used to create a container that runs the code for use in any machine that runs docker.
 
-### Slack
+## Slack
 
 Slack is a messaging system used by software development teams around the world. It is used to deliver notifications to your mobile without having to write a mobile app.
 
-### Python
+## Python
 
 AI's language of choice is Python, and Tensorflow was written in Python. No surprise why we need it.
 
-### STEP 1 - BUY VIDEO SECURITY CAMERA and MEMORY STICK
+## STEP 1 - BUY VIDEO SECURITY CAMERA and MEMORY STICK
 
 1. Buy a video security camera such as the Xiaomi Mijia Camera. There are many types of security cameras out there. The setup instructions I am providing here only work for Xiaomi Mijia camera, as that is the one that I purchased. In theory you can buy any camera and as long as you get the camera to save the videos into a NAS storage, that's ok.
 The camera doesn't come with a memory stick. In order for the NAS share feature to work you need a memory stick. In this case I recommend 16gb size.
 
-### STEP 2 - CONFIGURE XIAOMI MIJIA CAMERA
+## STEP 2 - CONFIGURE XIAOMI MIJIA CAMERA
 
 Download the MiHome app and setup the camera per instructions. Plenty of Youtube videos that help you on this. Here is one: https://www.youtube.com/watch?v=QXDv1RsccSs
 You need to create a NAS share somewhere in your network, to which the camera can upload any videos once motion is detected.
 In my home I setup a SMB share on a Raspberry Pi.
 
-### STEP 3 - RUN DOCKER CONTAINER
+## STEP 3 - RUN DOCKER CONTAINER
 
 Once you have the Xiaomi Mijia Camera installed and configured to dump all the videos into a NAS share, you are ready to start the process of setting up the docker container. But you need to install docker first. Don't know docker? Read this: https://docs.docker.com/get-started/
 
@@ -90,7 +90,7 @@ docker run -i -t -d -p 8888:8888 -v <NAS FOLDER WITH VIDEOS>:/data/videos/incomi
 
 ```
 
-### STEP 4 - Delivering the notifications
+## STEP 4 - Delivering the notifications
 
 Instead of relying on the Mihome app for receiving notifications it was decided to deliver notification straight to Slack under a specific channel.
 
@@ -103,13 +103,13 @@ secretToken: a secret token
 channelId: a channel id
 ```
 
-### STEP 5 - Understanding Tensorflow customisations ###
+## STEP 5 - Understanding Tensorflow customisations ###
 
 To better understand the customisations made to the tensorflow object detection demo, lets open a jupyter notebook:
 
-docker exec -it <CONTAINER ID> /bin/bash -c "export COLUMNS=tput cols; export LINES=tput lines; exec bash"
 
 ``` bash
+docker exec -it <CONTAINER ID> /bin/bash -c "export COLUMNS=tput cols; export LINES=tput lines; exec bash"
 cd /tensorflow/models/research/object_detection
 jupyter notebook --allow-root
 
@@ -129,10 +129,11 @@ jupyter notebook --allow-root
 
 Copy the url given by the newly started notebook server and open it in a browser.
 
-Methods to look for:
+Now lets take a look at some of the key methods
 
+### notifySlack 
 
-Whenever a person is detected in a video uploaded by the security camera, a method called notifySlack is called.
+Whenever a person is detected in a video uploaded by the security camera, a method called **notifySlack** is called.
 This method uses the slack API to upload the video and an image to allow for quick identification of the security threat in the video.
 I used slack for speed of development. It comes with built-in security, as I can control the access to the channel to only the people I want to.
 It comes with a mobile app for android and ios, therefore I don't have to develop any app to make the notifications work.
@@ -177,6 +178,7 @@ def notifySlack(plt, image_np):
 
 The way the object detection works, using the OpenCV library, we take sample video frames from a video file (not every single video frame because the video files have 20 frames per second!), and for each frame captured we call the run_inference_for_single_image(image_np, detection_graph) method. This method returns a dictionary with the results of the inference analysis. 
 
+### processVideoFile
 ```python
 
 
