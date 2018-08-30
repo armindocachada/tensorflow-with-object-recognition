@@ -112,7 +112,7 @@ service intruder_detection_service start
 ```
 It outputs logs to /data/intruder_detection_service.out
 
-The script first tries to download the model file configured and after the download is complete it waits for video files to be uploaded to the **/data/videos/**incoming folder. Any processed videos are kept in the same location but a new file is created to mark that the video has been processed.
+The script first tries to download the model file configured and after the download is complete it waits for video files to be uploaded to the ** /data/videos/incoming ** folder. Any processed videos are kept in the same location but a new file is created to mark that the video has been processed.
 
 ## STEP 6 - Understanding Tensorflow customisations ###
 
