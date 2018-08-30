@@ -1,10 +1,9 @@
 # AI at your fingertips - Make any security camera smarter for less than $50 using Tensorflow
 
-Most people think that AI is difficult, and I am on a journey to prove otherwise. Harnessing the power of AI is not difficult at all and it will cost very little.
-This is only possible because we can stand on the shoulder of giants and you take advantage of all the free stuff available out there. It is important to note the huge contribution to AI from Google which have contributed a huge amount to the AI community.
+Most people think that AI is difficult, and I am on a journey to prove otherwise. Harnessing the power of AI is not difficult at all, and it will cost very little. This is only possible because we can stand on the shoulder of giants and you take advantage of all the free stuff available out there. It is important to note the huge contribution to AI from Google which have contributed a huge amount to the AI community.
 
-Background to this story. I bought recently a Xiaomi security camera from GearBest(https://www.gearbest.com/ip-cameras/pp_615275.html?wid=1433363).
-On its own this camera is already quite good. It has 1080p resolution and comes with the MiHome app. You can configure the camera using a schedule and when it detects movement it will send you a notification to your mobile. But here lies the problem. The camera sends you quite a few alerts and only a small percentage will be because a person was detected. Many times, just noise(such as train), or even a housefly will trigger the camera. This is not necessarily a bad thing, especially if triggered by sound, as it can be used for a variety of scenarios in the future. But to be useful in terms of security it needs to only trigger alerts for scenarios which are of real concern. Too many false positives and you end up ignoring the warnings. And if you end up ignoring the warnings, they become useless and a nuisance.
+Background to this story. I recently bought a Xiaomi security camera from GearBest(https://www.gearbest.com/ip-cameras/pp_615275.html?wid=1433363).
+On its own this camera is already quite good. It has 1080p resolution and comes with the MiHome app. You can configure the camera using a schedule and when it detects movement it will send you a notification to your mobile. But therein lies the problem. The camera sends you quite a few alerts and only a small percentage will be because a person was detected. Many times, just noises(such as from a train), or even a housefly will trigger the camera. This is not necessarily a bad thing, especially if triggered by sound, as it can be used for a variety of scenarios in the future. But to be useful in terms of security it needs to only trigger alerts for scenarios which are of real concern. Too many false positives, and you end up ignoring the warnings. And if you end up ignoring the warnings, they become useless.
 
 The Mihome camera doesn't come with real "cloud storage". But if you add a memory card the camera has an option to save all its videos in a NAS storage location. Videos files are generated any time movement is detected. And that is exactly what you need.
 
@@ -47,7 +46,7 @@ https://github.com/tensorflow/models/tree/master/research/object_detection. As a
 ## OpenCV
 
 Second tool used is OpenCV.
-OpenCV (Open Source Computer Vision Library) is an open source computer vision and machine learning software library. OpenCV Is used to process each frame of the video and apply a Tensorflow model.
+OpenCV (Open Source Computer Vision Library) is an open-source computer vision and machine learning software library. OpenCV Is used to process each frame of the video and apply a Tensorflow model.
 
 ## Docker
 
@@ -70,7 +69,7 @@ The camera doesn't come with a memory stick. In order for the NAS share feature 
 
 Download the MiHome app and setup the camera per instructions. Plenty of Youtube videos that help you on this. Here is one: https://www.youtube.com/watch?v=QXDv1RsccSs
 You need to create a NAS share somewhere in your network, to which the camera can upload any videos once motion is detected.
-In my home I setup a SMB share on a Raspberry Pi.
+In my home I setup an SMB share on a Raspberry Pi.
 
 ## STEP 3 - RUN DOCKER CONTAINER
 
