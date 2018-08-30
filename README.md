@@ -103,8 +103,18 @@ To try this demo, you need to create a Slack account and a private channel and g
 secretToken: a secret token
 channelId: a channel id
 ```
+## STEP 5 - Running the intruder detection service
 
-## STEP 5 - Understanding Tensorflow customisations ###
+The intruder_detection_service script can be started as a background service from the terminal. Currently the service is not started automatically.
+
+``` bash
+service intruder_detection_service start
+```
+It outputs logs to /data/intruder_detection_service.out
+
+The script first tries to download the model file configured and after the download is complete it starts to wait for video files in the /data/videos/incoming folder. Any processed videos are kept in the same location but a new file is created to mark that the video has been processed.
+
+## STEP 6 - Understanding Tensorflow customisations ###
 
 To better understand the customisations made to the tensorflow object detection demo, lets open a jupyter notebook:
 

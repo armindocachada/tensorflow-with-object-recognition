@@ -29,7 +29,7 @@ EOF
 
 until [ -n "`netstat -nat | grep 8080`" ]
 do
-  echo -n -e "\nwaiting for jboss processes to start";
+  echo -n -e "\nwaiting for  processes to start";
   sleep 1
 done
 echo "Service pid:$(service_pids)"
@@ -103,7 +103,7 @@ stop)
  RETVAL=0
  ;;
 status)
- pid=$(tomcat_pid)
+ pid=$(service_pid)
   if [ -n "$pid" ]
   then
     echo "$serviceName is running with pid: $pid"
