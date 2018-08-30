@@ -60,7 +60,7 @@ AI's language of choice is Python, and Tensorflow was written in Python. No surp
 
 ## STEP 1 - BUY VIDEO SECURITY CAMERA and MEMORY STICK
 
-1. Buy a video security camera such as the Xiaomi Mijia Camera. There are many types of security cameras out there. The setup instructions I am providing here only work for Xiaomi Mijia camera, as that is the one that I purchased. In theory you can buy any camera and as long as you get the camera to save the videos into a NAS storage, that's ok.
+Buy a video security camera such as the Xiaomi Mijia Camera. There are many types of security cameras out there. The setup instructions I am providing here only work for Xiaomi Mijia camera, as that is the one that I purchased. In theory you can buy any camera and as long as you get the camera to save captured videos into a NAS storage, that's ok.
 The camera doesn't come with a memory stick. In order for the NAS share feature to work you need a memory stick. In this case I recommend 16gb size.
 
 ## STEP 2 - CONFIGURE XIAOMI MIJIA CAMERA
@@ -72,6 +72,7 @@ In my home I setup a SMB share on a Raspberry Pi.
 ## STEP 3 - RUN DOCKER CONTAINER
 
 Once you have the Xiaomi Mijia Camera installed and configured to dump all the videos into a NAS share, you are ready to start the process of setting up the docker container. But you need to install docker first. Don't know docker? Read this: https://docs.docker.com/get-started/
+There are many options where you can run your docker container. For instance you can run it on a local server in your home(a laptop will work), or you can try to use one of the cloud services providers to host your docker container, for instance on Azure, AWS or the Google Cloud. It will cost you money, but you can spin them up on demand and in this way save money.
 
 1. Build docker container
 
