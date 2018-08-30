@@ -1,9 +1,9 @@
 # AI at your fingertips - Make any security camera smarter for less than $50 using Tensorflow
 
-Most people think that AI is difficult, and I am on a journey to prove otherwise. Harnessing the power of AI is not difficult at all, and it will cost very little. This is only possible because we can stand on the shoulder of giants and you take advantage of all the free stuff available out there. It is important to note the huge contribution to AI from Google which have contributed a huge amount to the AI community.
+Most people think that AI is difficult, and I am on a journey to prove otherwise. Harnessing the power of AI is not difficult but this is only possible because we can stand on the shoulder of giants and take advantage of all the free open source software available out there. 
 
 Background to this story. I recently bought a Xiaomi security camera from GearBest(https://www.gearbest.com/ip-cameras/pp_615275.html?wid=1433363).
-On its own this camera is already quite good. It has 1080p resolution and comes with the MiHome app. You can configure the camera using a schedule and when it detects movement it will send you a notification to your mobile. But therein lies the problem. The camera sends you quite a few alerts and only a small percentage will be because a person was detected. Many times, just noises(such as from a train), or even a housefly will trigger the camera. This is not necessarily a bad thing, especially if triggered by sound, as it can be used for a variety of scenarios in the future. But to be useful in terms of security it needs to only trigger alerts for scenarios which are of real concern. Too many false positives, and you end up ignoring the warnings. And if you end up ignoring the warnings, they become useless.
+On its own this camera is already quite good. It has 1080p resolution and comes with the MiHome app. You can configure the camera using a schedule and when it detects movement it will send you a notification to your mobile. But therein lies the problem. The camera sends you too many alerts and only a small percentage will be because a person was detected. Just noises(such as from a train), or even a housefly will trigger the camera. This is not necessarily a bad thing, especially if triggered by sound, as it can be used for a variety of scenarios in the future(e.g. detecting someone knocking on the door). But to be useful in terms of security it needs to only trigger alerts for scenarios which are of real concern. Too many false positives, and you end up ignoring the warnings. And if you end up ignoring the warnings, they become useless.
 
 The Mihome camera doesn't come with real "cloud storage". But if you add a memory card the camera has an option to save all its videos in a NAS storage location. Videos files are generated any time movement is detected. And that is exactly what you need.
 
@@ -221,9 +221,14 @@ def processVideoFile(file):
      
 ```
 
-We use the SSD Inception v2 pre-trained model( ssd_inception_v2_coco_2017_11_17), which already contains common objection detection classes, including **person** which is the only object detection class we are interested in this case. But its so easy to change it. 
+We use the SSD Inception v2 pre-trained model( ssd_inception_v2_coco_2017_11_17), which already contains common objection detection classes. Don't underestimate the effort of creating an model from scratch. It takes a lot of training. The easiest is to pick one of the pre-existing models. There are several options available. The right model depends on what type of hardware you have available and the response desired.
 
-Lets say you are trying to create a smart wildlife camera and you want to detect animals such as a very rare **Lion**. You can modify the method below to only search for **Lions**. In order to reduce false positives, you can also increase the score from the default value of 0.5 to something higher if wished. From personal experimentation 0.5 worked well for me.
+
+### detectPerson
+The detect person method as the name suggest searches for an object class named *person* with a detection score above 50%.
+However you can easily adapt this method to search for other object classes, depending on your purpose.
+Lets say you are trying to create a smart wildlife smart camera and you want to detect animals such as a very rare **Lion**. You can modify the method below to only search for the **Lion** object class. In order to reduce false positives, you can also increase the score from the default value of 0.5 to something higher. From personal experimentation 0.5 worked well for me.
+
 
 ```python
 def detectPerson(output_dict, category_index):
