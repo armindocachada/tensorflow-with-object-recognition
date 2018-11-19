@@ -85,6 +85,11 @@ There are many options where you can run your docker container. For instance you
 ``` bash
 docker build -t armindocachada/tensorflow-with-object-recognition .
 ```
+or raspberry pi
+
+``` bash
+docker build -t armindocachada/tensorflow-with-object-recognition -f Dockerfile_pi .
+```
 
 2. Start docker container
 

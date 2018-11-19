@@ -1,3 +1,5 @@
+FROM resin/rpi-raspbian:latest
+
 RUN pip install Cython jupyter matplotlib slackclient
 RUN apt-get -y install python-pil python-lxml python-tk python-opencv
 COPY tensorflow-models /tensorflow/models
