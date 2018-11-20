@@ -1,0 +1,27 @@
+FROM resin/raspberrypi3-debian:stretch
+RUN apt-get update
+RUN apt-get install python3-pip
+RUN apt-get install libatlas-base-dev
+RUN pip3 install tensorflow
+RUN apt-get install python3-dev
+RUN pip3 install Cython jupyter matplotlib slackclient
+RUN pip3 install opencv-python
+RUN pip3 install pillow lxml
+RUN apt-get -y install python-tk
+RUN apt-get install autoconf automake libtool curl unzip
+RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protobuf-all-3.6.1.zip
+RUN unzip -o protobuf-all-3.6.1.zip -d /root/
+RUN apt-get -y install g++
+RUN cd /root/protobuf-3.6.1 && ./configure
+RUN apt-get -y install build-essential
+RUN cd /root/protobuf-3.6.1 && make
+RUN cd /root/protobuf-3.6.1 && make check
+RUN cd /root/protobuf-3.6.1 && make install
+WORKDIR /root/protobuf-3.6.1/python
+RUN export LD_LIBRARY_PATH=../src/.libs && \
+    python3 setup.py build --cpp_implementation  && \
+    python3 setup.py test --cpp_implementation && \
+    python3 setup.py install --cpp_implementation && \
+    export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp && \
+    export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=3 && \
+    ldconfig
