@@ -28,7 +28,7 @@ COPY security_camera_object_detection.ipynb /tensorflow/models/research/object_d
 WORKDIR /tensorflow/models/research
 RUN protoc object_detection/protos/*.proto --python_out=.
 RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim && python3 object_detection/builders/model_builder_test.py
-RUN jupyter nbconvert --to script /tensorflow/models/research/object_detectionsecurity_camera_object_detection.ipynb
+RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/security_camera_object_detection.ipynb
 
 
 WORKDIR /root
