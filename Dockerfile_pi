@@ -1,14 +1,37 @@
 FROM armindocachada/tensorflow-raspberrypi
 RUN mkdir -p /tensorflow
 WORKDIR /tensorflow
+RUN apt-get -y install libjpeg62 
+RUN apt-get -y install libopenjp2-7-dev 
+RUN apt-get -y install libtiff5
+RUN apt-get -y install libwebp6
+RUN apt-get -y install libjasper1
+RUN apt-get -y install libilmbase12
+RUN apt-get -y install libopenexr22
+RUN apt-get -y install libgstreamer1.0-0
+RUN apt-get -y install libavcodec-extra57
+RUN apt-get -y install libavformat57
+RUN apt-get -y install libswscale4
+RUN apt-get -y install libgtk-3-0
+RUN apt-get -y install libqtgui4
+RUN apt-get -y install libqt4-test 
 RUN apt-get -y install git 
+RUN pip3 install imutils
+
 RUN git clone https://github.com/armindocachada/models 
 RUN mkdir -p /data/videos/incoming
 COPY intruder_detection_service.sh /etc/init.d/intruder_detection_service
 COPY config.ini /tensorflow/models/research/object_detection/
 RUN chmod u+x  /etc/init.d/intruder_detection_service
-#COPY object_detection_tutorial.ipynb /tensorflow/models/research/object_detection/
+COPY object_detection_tutorial.ipynb /tensorflow/models/research/object_detection/
 WORKDIR /tensorflow/models/research
 RUN protoc object_detection/protos/*.proto --python_out=.
-RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim && python object_detection/builders/model_builder_test.py
-RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/object_detection_tutorial.ipynb
+RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim && python3 object_detection/builders/model_builder_test.py
+RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/object_detection_tutorial_pi_python3.ipynb
+
+RUN apt-get -y install wget
+WORKDIR /root
+RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip && \
+    unzip -o ngrok-stable-linux-arm.zip -d /bin/ && \
+    rm ngrok-stable-linux-arm.zip
+    

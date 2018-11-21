@@ -134,7 +134,7 @@ To better understand the customisations made to the tensorflow object detection 
 docker exec -it <CONTAINER ID> /bin/bash -c "export COLUMNS=tput cols; export LINES=tput lines; exec bash"
 cd /tensorflow/models/research/object_detection
 jupyter notebook --allow-root
-
+jupyter notebook --ip=0.0.0.0 --port=8888
 
 [W 10:01:22.633 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
 [I 10:01:22.641 NotebookApp] Serving notebooks from local directory: /tensorflow/models/research/object_detection
