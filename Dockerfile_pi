@@ -24,11 +24,11 @@ RUN mkdir -p /data/videos/incoming
 COPY intruder_detection_service.sh /etc/init.d/intruder_detection_service
 COPY config.ini /tensorflow/models/research/object_detection/
 RUN chmod u+x  /etc/init.d/intruder_detection_service
-COPY object_detection_tutorial.ipynb /tensorflow/models/research/object_detection/
+COPY security_camera_object_detection.ipynb /tensorflow/models/research/object_detection/
 WORKDIR /tensorflow/models/research
 RUN protoc object_detection/protos/*.proto --python_out=.
 RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim && python3 object_detection/builders/model_builder_test.py
-RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/object_detection_tutorial_pi_python3.ipynb
+RUN jupyter nbconvert --to script /tensorflow/models/research/object_detectionsecurity_camera_object_detection.ipynb
 
 
 WORKDIR /root

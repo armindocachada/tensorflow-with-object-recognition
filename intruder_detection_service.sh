@@ -8,7 +8,7 @@
 . /lib/lsb/init-functions
 
 serviceName='Intruder detection service'
-startup="ipython /tensorflow/models/research/object_detection/object_detection_tutorial.py"
+startup="ipython /tensorflow/models/research/object_detection/security_camera_object_detection.py"
 shutdown="kill $pid"
 user=root
 currentUser=`id -un`
