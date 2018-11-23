@@ -36,3 +36,4 @@ RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip && \
     unzip -o ngrok-stable-linux-arm.zip -d /bin/ && \
     rm ngrok-stable-linux-arm.zip
     
+RUN pip3 install opencv-contrib-python

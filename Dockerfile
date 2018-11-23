@@ -7,7 +7,7 @@ RUN pip3 install pillow lxml
 RUN pip3 install imutils
 RUN pip3 uninstall -y matplotlib
 RUN pip3 install opencv-python
-
+RUN pip3 install opencv-contrib-python
 RUN mkdir -p /tensorflow
 WORKDIR /tensorflow
 RUN git clone https://github.com/armindocachada/models 
