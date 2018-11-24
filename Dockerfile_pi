@@ -22,7 +22,6 @@ RUN mkdir -p /tensorflow
 WORKDIR /tensorflow
 RUN git clone https://github.com/armindocachada/models 
 RUN mkdir -p /data/videos/incoming
-COPY config.ini /tensorflow/models/research/object_detection/
 #RUN chmod u+x  /etc/init.d/intruder_detection_service
 WORKDIR /tensorflow/models/research
 RUN protoc object_detection/protos/*.proto --python_out=.
@@ -39,5 +38,5 @@ COPY security_camera_object_detection.ipynb /tensorflow/models/research/object_d
 RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/security_camera_object_detection.ipynb
 COPY scripts/intruder_detection_service.sh /etc/init.d/intruder_detection_service
 COPY scripts/start.sh /root/start.sh
-
+COPY config.ini /tensorflow/models/research/object_detection/
 ENTRYPOINT ["/root/start.sh"]
