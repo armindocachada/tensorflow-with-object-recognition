@@ -15,6 +15,7 @@ RUN apt-get -y install libqtgui4
 RUN apt-get -y install libqt4-test 
 RUN apt-get -y install git
 RUN apt-get -y install wget
+RUN apt-get -y install libhdf5-dev
 RUN pip3 install imutils
 
 RUN mkdir -p /tensorflow
@@ -37,3 +38,4 @@ RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip && \
     rm ngrok-stable-linux-arm.zip
     
 RUN pip3 install opencv-contrib-python
+RUN service intruder_detection_service start
