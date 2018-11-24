@@ -17,6 +17,11 @@ RUN apt-get -y install git
 RUN apt-get -y install wget
 RUN apt-get -y install libhdf5-dev
 RUN pip3 install imutils
+#https://stackoverflow.com/questions/41200201/opencv-unable-to-stop-the-stream-inappropriate-ioctl-for-device
+# not able to make it work - it seems i would have to build opencv again. Not an option at this stage.
+#RUN apt-get -y install libv4l-dev
+#RUN apt-get -y install libavcodec-dev libavformat-dev libavdevice-dev
+
 
 RUN mkdir -p /tensorflow
 WORKDIR /tensorflow
