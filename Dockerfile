@@ -10,9 +10,9 @@ RUN pip3 install opencv-python
 RUN pip3 install opencv-contrib-python
 RUN mkdir -p /tensorflow
 WORKDIR /tensorflow
-RUN git clone https://github.com/armindocachada/models 
+RUN git clone https://github.com/armindocachada/models
 RUN mkdir -p /data/videos/incoming
-COPY intruder_detection_service.sh /etc/init.d/intruder_detection_service
+COPY scripts/intruder_detection_service.sh /etc/init.d/intruder_detection_service
 COPY config.ini /tensorflow/models/research/object_detection/
 RUN chmod u+x  /etc/init.d/intruder_detection_service
 COPY security_camera_object_detection.ipynb /tensorflow/models/research/object_detection/
