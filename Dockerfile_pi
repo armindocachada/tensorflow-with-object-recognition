@@ -25,11 +25,9 @@ RUN mkdir -p /data/videos/incoming
 COPY intruder_detection_service.sh /etc/init.d/intruder_detection_service
 COPY config.ini /tensorflow/models/research/object_detection/
 RUN chmod u+x  /etc/init.d/intruder_detection_service
-COPY security_camera_object_detection.ipynb /tensorflow/models/research/object_detection/
 WORKDIR /tensorflow/models/research
 RUN protoc object_detection/protos/*.proto --python_out=.
 RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim && python3 object_detection/builders/model_builder_test.py
-RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/security_camera_object_detection.ipynb
 
 
 WORKDIR /root
@@ -38,4 +36,6 @@ RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip && \
     rm ngrok-stable-linux-arm.zip
     
 RUN pip3 install opencv-contrib-python
+COPY security_camera_object_detection.ipynb /tensorflow/models/research/object_detection/
+RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/security_camera_object_detection.ipynb
 RUN service intruder_detection_service start
