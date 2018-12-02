@@ -115,7 +115,6 @@ class Tracker(object):
         # goal will be to match an input centroid to an existing
         # object centroid
         D = self.calculateAffinityWithOldObjects(newCentroids, self.objects)
-
         # in order to perform this matching we must (1) find the
         # smallest value in each row and then (2) sort the row
         # indexes based on their minimum values so that the row
@@ -133,7 +132,7 @@ class Tracker(object):
         # of the rows and column indexes we have already examined
         usedRows = set()
         usedCols = set()
-
+        toDelete = []
         # loop over the combination of the (row, column) index
 			# tuples
         for (row, col) in zip(rows, cols):
@@ -182,7 +181,12 @@ class Tracker(object):
                 # frames the object has been marked "disappeared"
                 # for warrants deregistering the object
                 if self.objects[objectID].disappeared > self.maxDisappeared:
-                    self.objects.pop(objectID,None)
+                    toDelete.append(objectID)
+
+
+        for delObjectId in toDelete:
+            self.objects.pop(delObjectId,None)
+
 
         # otherwise, if the number of input centroids is greater
         # than the number of existing object centroids we need to

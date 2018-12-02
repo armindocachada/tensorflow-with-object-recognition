@@ -42,7 +42,6 @@ RUN pip3 install opencv-contrib-python
 COPY security_camera_object_detection.ipynb /tensorflow/models/research/object_detection/
 RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/security_camera_object_detection.ipynb
 COPY scripts/intruder_detection_service.sh /etc/init.d/intruder_detection_service
-COPY scripts/start.sh /root/start.sh
 COPY config.ini /tensorflow/models/research/object_detection/
 
 RUN pip3 install ephem
@@ -55,5 +54,7 @@ RUN echo 'export OBJECT_DETECTION_API_PATH=/tensorflow/models/research/object_de
 WORKDIR /intruder-detector
 
 RUN pip3 install scipy
+
+COPY scripts/start.sh /root/start.sh
 
 ENTRYPOINT ["/root/start.sh"]
