@@ -54,6 +54,6 @@ RUN echo 'export OBJECT_DETECTION_API_PATH=/tensorflow/models/research/object_de
 
 WORKDIR /intruder-detector
 
-pip3 install scipy
+RUN pip3 install scipy
 
 ENTRYPOINT ["/root/start.sh"]
