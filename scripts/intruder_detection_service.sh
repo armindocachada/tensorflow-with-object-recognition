@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # chkconfig: 345 99 01
 #
@@ -8,7 +8,7 @@
 . /lib/lsb/init-functions
 
 serviceName='Intruder detection service'
-startup="ipython /tensorflow/models/research/object_detection/security_camera_object_detection.py"
+startup="python security_camera.py"
 shutdown="kill $pid"
 user=root
 currentUser=`id -un`
@@ -19,8 +19,7 @@ start(){
 # if user is different then $user we need to use sudo
 if [ "$user" = "$currentUser" ]
 then
-   cd /tensorflow/models/research && export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
-   cd /tensorflow/models/research/object_detection && nohup $startup > /data/intruder_detection_service.out 2>&1 </dev/null &
+   cd /intruder-detector && nohup $startup > /data/intruder_detection_service.out 2>&1 </dev/null &
 else
 sudo -u $user -s -- <<EOF
 nohup $startup > /data/intruder_detection_service.out 2>&1 </dev/null &
