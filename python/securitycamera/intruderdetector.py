@@ -98,7 +98,6 @@ class IntruderDetector(object):
             (_, resizedFrameColor, resizedFrameGray) = self.preprocess(frame)
 
             (H, W) = resizedFrameColor.shape[:2]
-            cv2.line(resizedFrameColor, (0, H), (W, int(H * 2 / 3)), (255, 0, 0), 5)
             if currentFrame % 20 == 0:
                 # lose all existing trackers
                 multiTracker = dict()
@@ -107,14 +106,15 @@ class IntruderDetector(object):
 
                 if boundingBoxesMotion:
                     print("bounding boxes for motion detector {}".format(boundingBoxesMotion))
-
+                    # self.drawBoundingBoxes(resizedFrameColor, boundingBoxesMotion, (0, 255, 0))
                 if self.isInRestrictedArea(resizedFrameColor):
                     (_, _, boundingBoxesDetector) = self.detector.detectPerson(resizedFrameColor)
                     if boundingBoxesDetector:
                         print("bounding boxes for motion detector {}".format(boundingBoxesMotion))
-
+                    cv2.line(resizedFrameColor, (0, H), (W, int(H * 2 / 3)), (255, 0, 0), 5)
                     self.drawBoundingBoxes(resizedFrameColor, boundingBoxesMotion, (0, 255, 0))
                     self.drawBoundingBoxes(resizedFrameColor, boundingBoxesDetector, (255, 0, 0))
+
                     self.slack.notifySlack(file, resizedFrameColor, bsFrame)
                     break;
             # update frame count
