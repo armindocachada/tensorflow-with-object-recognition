@@ -44,12 +44,16 @@ RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/s
 COPY scripts/intruder_detection_service.sh /etc/init.d/intruder_detection_service
 COPY scripts/start.sh /root/start.sh
 COPY config.ini /tensorflow/models/research/object_detection/
-ENTRYPOINT ["/root/start.sh"]
 
 RUN pip3 install ephem
+COPY python /intruder-detector/
+COPY config.ini /intruder-detector
 
 RUN echo 'cd /tensorflow/models/research && export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim:`pwd`/object_detection' >> /root/.bashrc
 RUN echo 'export OBJECT_DETECTION_API_PATH=/tensorflow/models/research/object_detection' >> /root/.bashrc
-COPY python /intruder-detector/
-COPY config.ini /intruder-detector
+
 WORKDIR /intruder-detector
+
+pip3 install scipy
+
+ENTRYPOINT ["/root/start.sh"]
