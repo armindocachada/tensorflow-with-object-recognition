@@ -47,7 +47,7 @@ class Slack(object):
                         channel=self.channel_id,
                         count=1000
                         )
-
+        print("deleting {}".format(len(result["files"])))
         for file in result["files"]:
             print("Deleting file {}".format( file["id"]))
             deleteFileResult = self.sc.api_call("files.delete",

@@ -66,7 +66,8 @@ class MotionDetector(object):
 
         merged = boxes + mergedBoundingBoxes
         for item in deleteBoxes:
-            merged.remove(item)
+            if item in merged:
+                merged.remove(item)
 
         print("returning merged bounding boxes {}".format(merged))
         return merged
