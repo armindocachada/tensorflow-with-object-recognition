@@ -45,16 +45,17 @@ class Slack(object):
     def clearFiles(self):
         result = self.sc.api_call("files.list",
                         channel=self.channel_id,
+                        types="videos",
                         count=1000
                         )
         print("deleting {}".format(len(result["files"])))
         for file in result["files"]:
-            print("Deleting file {}".format( file["id"]))
-            deleteFileResult = self.sc.api_call("files.delete",
+                print("Deleting file {}".format(file["id"]))
+                deleteFileResult = self.sc.api_call("files.delete",
                              file=file["id"])
-
-            print("result = {} Succeeded = {} ".format(deleteFileResult, deleteFileResult["ok"]))
-
+                print("result = {} Succeeded = {} ".format(deleteFileResult, deleteFileResult["ok"]))
+                if not deleteFileResult["ok"]:
+                    break
 
     def notifySlack(self, file, image_np, image_no_background):
         plt.imsave("/tmp/image_with_background.png", image_np)

@@ -75,6 +75,9 @@ def wait_for_videos(videosFolder):
         if result:
             moveVideoToArchive(file)
 
+
+
+print("OpenCV version :  {0}".format(cv2.__version__))
 # if a video path was not supplied, search for files in the given
 # folder
 if args.get("clear_slack_files",False):
