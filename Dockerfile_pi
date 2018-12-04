@@ -62,16 +62,16 @@ RUN apt-get install cmake
 WORKDIR /root/opencv-3.4.4/build
 RUN cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local  -D WITH_FFMPEG=ON -D WITH_TBB=ON -D WITH_GTK=ON -D WITH_V4L=ON -D WITH_OPENGL=ON -D WITH_CUBLAS=ON -DWITH_QT=OFF -DCUDA_NVCC_FLAGS="-D_FORCE_INLINES" ..
 
-COPY scripts/dphys-swapfile /etc/dphys-swapfile
+#COPY scripts/dphys-swapfile /etc/dphys-swapfile
 
-RUN service dphys-swapfile restart
+#RUN service dphys-swapfile restart
 
 RUN make -j4
 RUN make install
 
-COPY scripts/dphys-swapfile_original /etc/dphys-swapfile
+#COPY scripts/dphys-swapfile_original /etc/dphys-swapfile
 
-RUN service dphys-swapfile restart
+#RUN service dphys-swapfile restart
 
 WORKDIR /intruder-detector
 RUN pip3 install scipy
