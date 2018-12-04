@@ -56,6 +56,9 @@ RUN apt-get -y install libavcodec-dev libavformat-dev libavdevice-dev
 WORKDIR /root
 RUN wget https://github.com/opencv/opencv/archive/3.4.4.zip
 RUN unzip -o 3.4.4.zip
+
+RUN apt-get install cmake
+
 WORKDIR /root/opencv-3.4.4/build
 RUN cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local  -D WITH_FFMPEG=ON -D WITH_TBB=ON -D WITH_GTK=ON -D WITH_V4L=ON -D WITH_OPENGL=ON -D WITH_CUBLAS=ON -DWITH_QT=OFF -DCUDA_NVCC_FLAGS="-D_FORCE_INLINES" ..
 RUN make -j7
