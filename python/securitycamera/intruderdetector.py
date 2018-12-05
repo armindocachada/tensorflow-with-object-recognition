@@ -2,21 +2,23 @@ from securitycamera.videoutils import VideoUtils
 
 
 import cv2
+import logging
 import imutils
 from securitycamera.motiondetector import MotionDetector
 from securitycamera.tensorflowdetector import TensorflowDetector
 from securitycamera.tracking import Tracker
 from securitycamera.slack import Slack
 
-
+logger = logging.getLogger('security_camera')
 class IntruderDetector(object):
+
 
     def __init__(self, slackConfigPath, debug=False):
         self.motionDetector = MotionDetector()
         self.detector = TensorflowDetector()
-
         self.debug = debug
-        print("Slack config path: {}".format(slackConfigPath))
+
+        logger.info("Slack config path: {}".format(slackConfigPath))
         self.slack = Slack(slackConfigPath)
 
     # blocks until it finds the next video to analyse
@@ -45,7 +47,7 @@ class IntruderDetector(object):
                     (cx, cy) = obj.centroid()
                     limitY = cx * (-1 * H / (3 * W)) + H
                     if cy > limitY:
-                        print("Object id {} in restricted area! Limit y {} and coordinates {}".format(
+                        logger.info("Object id {} in restricted area! Limit y {} and coordinates {}".format(
                             obj.objectID, limitY, (cx, cy)))
                         # here we can send a slack notification and break the while loop
                         return True
@@ -73,25 +75,26 @@ class IntruderDetector(object):
         self.tracker = Tracker()
         multiTracker = dict()
 
-        print("processFile sunset=%s" %sunset)
+        logger.info("processFile sunset=%s" %sunset)
         if sunset:
-            print("File %s was recorded after sunset." % file)
+            logger.info("File %s was recorded after sunset." % file)
         else:
-            print("File %s was recorded in daytime." % file)
+            logger.info("File %s was recorded in daytime." % file)
 
         cap = cv2.VideoCapture(file)
 
         totalFrameCount = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-        print("Total frame count %d" % totalFrameCount)
+        logger.info("Total frame count %d" % totalFrameCount)
         while True:
             currentFrame = cap.get(cv2.CAP_PROP_POS_FRAMES)
             ret, frame = cap.read()
-
+            logger.info("Processing frame number {} out of {} frames".format(currentFrame, totalFrameCount))
             # update our frame counter
 
             if (not ret):
-                print ("stopping %s" % ret)
+                logger.info("Attempting to stop stream")
                 cap.release()
+                logger.info("Successfully stopped stream")
                 break
 
 
@@ -105,12 +108,12 @@ class IntruderDetector(object):
                 self.tracker.updateTrackers(currentFrame, resizedFrameColor,boundingBoxesMotion, self.debug)
 
                 if boundingBoxesMotion:
-                    print("bounding boxes for motion detector {}".format(boundingBoxesMotion))
+                    logger.debug("bounding boxes for motion detector {}".format(boundingBoxesMotion))
                     # self.drawBoundingBoxes(resizedFrameColor, boundingBoxesMotion, (0, 255, 0))
                 if self.isInRestrictedArea(resizedFrameColor):
                     (_, _, boundingBoxesDetector) = self.detector.detectPerson(resizedFrameColor)
                     if boundingBoxesDetector:
-                        print("bounding boxes for motion detector {}".format(boundingBoxesMotion))
+                        logger.debug("bounding boxes for motion detector {}".format(boundingBoxesMotion))
                     cv2.line(resizedFrameColor, (0, H), (W, int(H * 2 / 3)), (255, 0, 0), 5)
                     self.drawBoundingBoxes(resizedFrameColor, boundingBoxesMotion, (0, 255, 0))
                     self.drawBoundingBoxes(resizedFrameColor, boundingBoxesDetector, (255, 0, 0))

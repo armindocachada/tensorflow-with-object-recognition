@@ -12,8 +12,8 @@ from securitycamera.intruderdetector import IntruderDetector
 
 def setupLogger():
     # create logger with 'spam_application'
-    logger = logging.getLogger('security_camera')
-    logger.setLevel(logging.INFO)
+    myLogger = logging.getLogger('security_camera')
+    myLogger.setLevel(logging.INFO)
     # create file handler which logs even debug messages
     fh = logging.FileHandler('security_camera.log')
     fh.setLevel(logging.INFO)
@@ -25,9 +25,9 @@ def setupLogger():
     fh.setFormatter(formatter)
     ch.setFormatter(formatter)
     # add the handlers to the logger
-    logger.addHandler(fh)
-    logger.addHandler(ch)
-    return logger
+    myLogger.addHandler(fh)
+    myLogger.addHandler(ch)
+    return myLogger
 
 
 logger = setupLogger()
@@ -104,7 +104,7 @@ def wait_for_videos(videosFolder):
 
 
 
-print("OpenCV version :  {0}".format(cv2.__version__))
+logger.info("OpenCV version :  {0}".format(cv2.__version__))
 # if a video path was not supplied, search for files in the given
 # folder
 if args.get("clear_slack_files",False):

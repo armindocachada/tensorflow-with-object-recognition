@@ -13,4 +13,4 @@ COPY scripts/start.sh /root/start.sh
 
 
 
-#ENTRYPOINT ["/root/start.sh"]
+ENTRYPOINT ["/root/start.sh"]

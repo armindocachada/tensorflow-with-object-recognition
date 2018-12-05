@@ -1,7 +1,6 @@
 from utils import label_map_util
 
 from utils import visualization_utils as vis_util
-
 import cv2
 import imutils
 import numpy as np
@@ -9,16 +8,17 @@ import os
 import tensorflow as tf
 import six.moves.urllib as urllib
 import tarfile
+import logging
 
-from imutils.object_detection import non_max_suppression
+logger = logging.getLogger('security_camera')
 class TensorflowDetector(object):
 
 
     def downloadModel(self, MODEL_NAME):
         MODEL_FILE = MODEL_NAME + '.tar.gz'
         DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
-
-        print("Is file downloaded? %s " % os.path.isfile(MODEL_FILE))
+        logger.info("Preparing to download tensorflow model {}".format(MODEL_FILE))
+        logger.info("Is file downloaded? %s " % os.path.isfile(MODEL_FILE))
         if not os.path.isfile(MODEL_FILE):
             opener = urllib.request.URLopener()
             opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
@@ -99,10 +99,10 @@ class TensorflowDetector(object):
             label = self.category_index.get(classes[i])
             if (score >= 0.5 and label['name'] == 'person'):
                 result = True
-                print("Found person")
+                logger.info("Detected person")
                 detection_boxes = output_dict['detection_boxes']
                 boxes_shape = detection_boxes.shape
-                print('detection boxes shape {}'.format(boxes_shape))
+                logger.debug('detection boxes shape {}'.format(boxes_shape))
                 for detection_box in detection_boxes:
 
                     ymin = detection_box[0] * im_height
@@ -121,8 +121,8 @@ class TensorflowDetector(object):
         return (result,frame, boundingBoxes)
 
     def drawBoundingBoxes(self, frame, output_dict):
-        print ("detected person")
-        print(output_dict['detection_boxes'][0])
+        logger.debug("detected person")
+        logger.debug(output_dict['detection_boxes'][0])
         frame.setflags(write=1)
         vis_util.visualize_boxes_and_labels_on_image_array(
             frame,
