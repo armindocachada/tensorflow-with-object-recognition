@@ -8,6 +8,7 @@ from securitycamera.motiondetector import MotionDetector
 from securitycamera.tensorflowdetector import TensorflowDetector
 from securitycamera.tracking import Tracker
 from securitycamera.slack import Slack
+from imutils.video import FileVideoStream
 
 logger = logging.getLogger('security_camera')
 class IntruderDetector(object):
@@ -73,7 +74,6 @@ class IntruderDetector(object):
         # fps = FPS().start()
         sunset = VideoUtils.isAfterSunset(file)
         self.tracker = Tracker()
-        multiTracker = dict()
 
         logger.info("processFile sunset=%s" %sunset)
         if sunset:
@@ -81,21 +81,23 @@ class IntruderDetector(object):
         else:
             logger.info("File %s was recorded in daytime." % file)
 
-        cap = cv2.VideoCapture(file)
+        cap = FileVideoStream(file).start()
 
-        totalFrameCount = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        totalFrameCount = cap.stream.get(cv2.CAP_PROP_FRAME_COUNT)
         logger.info("Total frame count %d" % totalFrameCount)
-        while True:
-            currentFrame = cap.get(cv2.CAP_PROP_POS_FRAMES)
-            ret, frame = cap.read()
+
+        currentFrame = 0
+        while cap.more():
+            frame = cap.read()
+            #ret, frame = cap.read()
             logger.info("Processing frame number {} out of {} frames".format(currentFrame, totalFrameCount))
             # update our frame counter
 
-            if (not ret):
-                logger.info("Attempting to stop stream")
-                cap.release()
-                logger.info("Successfully stopped stream")
-                break
+            #if (not ret):
+            #    logger.info("Attempting to stop stream")
+            #    cap.release()
+            #    logger.info("Successfully stopped stream")
+            #    break
 
 
             (_, resizedFrameColor, resizedFrameGray) = self.preprocess(frame)
@@ -103,7 +105,7 @@ class IntruderDetector(object):
             (H, W) = resizedFrameColor.shape[:2]
             if currentFrame % 20 == 0:
                 # lose all existing trackers
-                multiTracker = dict()
+                #multiTracker = dict()
                 (bsFrame,boundingBoxesMotion) = self.motionDetector.detectObjectsByMotion(resizedFrameColor, resizedFrameGray)
                 self.tracker.updateTrackers(currentFrame, resizedFrameColor,boundingBoxesMotion, self.debug)
 
@@ -129,6 +131,7 @@ class IntruderDetector(object):
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
+            currentFrame += 1
 
 
 
