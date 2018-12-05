@@ -2,13 +2,44 @@ FROM resin/raspberrypi3-debian:stretch
 RUN apt-get update
 RUN apt-get install python3-pip
 RUN apt-get install libatlas-base-dev
-RUN pip3 install tensorflow
 RUN apt-get install python3-dev
 RUN pip3 install Cython jupyter matplotlib slackclient
-RUN pip3 install opencv-python
-RUN pip3 install pillow lxml
+#RUN pip3 install opencv-python
+RUN apt-get -y install ffmpeg
+
 RUN apt-get -y install python-tk
 RUN apt-get install autoconf automake libtool curl unzip
+RUN apt-get -y install libjpeg62
+RUN apt-get -y install libopenjp2-7-dev
+RUN apt-get -y install libtiff5
+RUN apt-get -y install libwebp6
+RUN apt-get -y install libjasper1
+RUN apt-get -y install libilmbase12
+RUN apt-get -y install libopenexr22
+RUN apt-get -y install libgstreamer1.0-0
+RUN apt-get -y install libavcodec-extra57
+RUN apt-get -y install libavformat57
+RUN apt-get -y install libswscale4
+RUN apt-get -y install libgtk-3-0
+RUN apt-get -y install libqtgui4
+RUN apt-get -y install libqt4-test
+RUN apt-get -y install git
+RUN apt-get -y install wget
+RUN apt-get -y install libhdf5-dev
+
+RUN apt-get update
+RUN apt-get -y install libv4l-dev
+RUN apt-get -y install libavcodec-dev libavformat-dev libavdevice-dev
+RUN apt-get -y install cmake
+
+#https://stackoverflow.com/questions/41200201/opencv-unable-to-stop-the-stream-inappropriate-ioctl-for-device
+# not able to make it work - it seems i would have to build opencv again. Not an option at this stage.
+
+RUN pip3 install imutils
+RUN pip3 install pillow lxml
+RUN pip3 install tensorflow
+RUN pip3 install ephem
+
 RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protobuf-all-3.6.1.zip
 RUN unzip -o protobuf-all-3.6.1.zip -d /root/
 RUN apt-get -y install g++
@@ -25,3 +56,42 @@ RUN export LD_LIBRARY_PATH=../src/.libs && \
     export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp && \
     export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=3 && \
     ldconfig
+RUN rm -fr /root/protobuf*
+# building open-cv
+
+
+WORKDIR /root
+RUN wget https://github.com/opencv/opencv/archive/3.4.4.zip
+RUN unzip -o 3.4.4.zip
+RUN apt-get install cmake
+WORKDIR /root/opencv-3.4.4/build
+RUN cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local  -D WITH_FFMPEG=ON -D WITH_TBB=ON -D WITH_GTK=ON -D WITH_V4L=ON -D WITH_OPENGL=ON -D WITH_CUBLAS=ON -DWITH_QT=OFF -DCUDA_NVCC_FLAGS="-D_FORCE_INLINES" ..
+
+#COPY scripts/dphys-swapfile /etc/dphys-swapfile
+
+RUN make -j4
+RUN make install
+RUN pip3 install opencv-contrib-python
+RUN rm -fr /root/opencv*
+
+RUN apt-get install -y libsm6 libxext6
+
+# install ngrok
+
+WORKDIR /root
+RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip && \
+    unzip -o ngrok-stable-linux-arm.zip -d /bin/ && \
+    rm ngrok-stable-linux-arm.zip
+
+
+# tensorflow object detection api setup
+RUN mkdir -p /tensorflow
+WORKDIR /tensorflow
+RUN git clone https://github.com/armindocachada/models
+WORKDIR /tensorflow/models/research
+RUN protoc object_detection/protos/*.proto --python_out=.
+RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim && python3 object_detection/builders/model_builder_test.py
+
+
+RUN echo 'cd /tensorflow/models/research && export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim:`pwd`/object_detection' >> /root/.bashrc
+RUN echo 'export OBJECT_DETECTION_API_PATH=/tensorflow/models/research/object_detection' >> /root/.bashrc

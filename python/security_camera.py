@@ -3,8 +3,34 @@ import re
 import argparse
 import time
 import os
+import logging
+
 from securitycamera.slack import Slack
 from securitycamera.intruderdetector import IntruderDetector
+
+
+
+def setupLogger():
+    # create logger with 'spam_application'
+    logger = logging.getLogger('security_camera')
+    logger.setLevel(logging.INFO)
+    # create file handler which logs even debug messages
+    fh = logging.FileHandler('security_camera.log')
+    fh.setLevel(logging.INFO)
+    # create console handler with a higher log level
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.ERROR)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    # add the handlers to the logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+    return logger
+
+
+logger = setupLogger()
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--directory", type=str, default ="/data/videos/incoming",
@@ -25,6 +51,7 @@ ap.add_argument("-s", "--skip-frames", type=int, default=30,
 args = vars(ap.parse_args())
 
 
+
 def wait_for_video(directory, time_limit=3600, check_interval=60):
     '''Return next video file to process, if not keep checking once every check_interval seconds for time_limit seconds.
     time_limit defaults to 1 hour
@@ -35,7 +62,7 @@ def wait_for_video(directory, time_limit=3600, check_interval=60):
     last_time = now + time_limit
 
     while time.time() <= last_time:
-        print("Searching for new camera uploads")
+        logger.info("Searching for new camera uploads")
         for root, dirs, files in os.walk(directory):
             files = [fi for fi in files if fi.endswith(".mp4") and not fi.startswith(".")]
             for file in files:

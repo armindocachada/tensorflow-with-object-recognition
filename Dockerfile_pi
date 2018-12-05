@@ -1,73 +1,21 @@
 FROM armindocachada/tensorflow-raspberrypi
-RUN apt-get -y install libjpeg62 
-RUN apt-get -y install libopenjp2-7-dev 
-RUN apt-get -y install libtiff5
-RUN apt-get -y install libwebp6
-RUN apt-get -y install libjasper1
-RUN apt-get -y install libilmbase12
-RUN apt-get -y install libopenexr22
-RUN apt-get -y install libgstreamer1.0-0
-RUN apt-get -y install libavcodec-extra57
-RUN apt-get -y install libavformat57
-RUN apt-get -y install libswscale4
-RUN apt-get -y install libgtk-3-0
-RUN apt-get -y install libqtgui4
-RUN apt-get -y install libqt4-test 
-RUN apt-get -y install git
-RUN apt-get -y install wget
-RUN apt-get -y install libhdf5-dev
-RUN pip3 install imutils
 
-RUN mkdir -p /tensorflow
-WORKDIR /tensorflow
-RUN git clone https://github.com/armindocachada/models 
 RUN mkdir -p /data/videos/incoming
 #RUN chmod u+x  /etc/init.d/intruder_detection_service
-WORKDIR /tensorflow/models/research
-RUN protoc object_detection/protos/*.proto --python_out=.
-RUN export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim && python3 object_detection/builders/model_builder_test.py
 
-
-WORKDIR /root
-RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip && \
-    unzip -o ngrok-stable-linux-arm.zip -d /bin/ && \
-    rm ngrok-stable-linux-arm.zip
     
-RUN pip3 install opencv-contrib-python
 COPY security_camera_object_detection.ipynb /tensorflow/models/research/object_detection/
 RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/security_camera_object_detection.ipynb
 COPY scripts/intruder_detection_service.sh /etc/init.d/intruder_detection_service
 COPY config.ini /tensorflow/models/research/object_detection/
 
-RUN pip3 install ephem
+
 COPY python /intruder-detector/
 COPY config.ini /intruder-detector
 
-RUN echo 'cd /tensorflow/models/research && export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim:`pwd`/object_detection' >> /root/.bashrc
-RUN echo 'export OBJECT_DETECTION_API_PATH=/tensorflow/models/research/object_detection' >> /root/.bashrc
 
 
 
-#https://stackoverflow.com/questions/41200201/opencv-unable-to-stop-the-stream-inappropriate-ioctl-for-device
-# not able to make it work - it seems i would have to build opencv again. Not an option at this stage.
-RUN apt-get -y install libv4l-dev
-RUN apt-get -y install libavcodec-dev libavformat-dev libavdevice-dev
-
-WORKDIR /root
-RUN wget https://github.com/opencv/opencv/archive/3.4.4.zip
-RUN unzip -o 3.4.4.zip
-
-RUN apt-get install cmake
-
-WORKDIR /root/opencv-3.4.4/build
-RUN cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local  -D WITH_FFMPEG=ON -D WITH_TBB=ON -D WITH_GTK=ON -D WITH_V4L=ON -D WITH_OPENGL=ON -D WITH_CUBLAS=ON -DWITH_QT=OFF -DCUDA_NVCC_FLAGS="-D_FORCE_INLINES" ..
-
-#COPY scripts/dphys-swapfile /etc/dphys-swapfile
-
-#RUN service dphys-swapfile restart
-
-RUN make -j4
-RUN make install
 
 #COPY scripts/dphys-swapfile_original /etc/dphys-swapfile
 

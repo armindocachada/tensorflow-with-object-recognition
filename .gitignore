@@ -1,4 +1,5 @@
 .idea
+*.log
 example_videos
 config.ini
 __pycache__
