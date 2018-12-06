@@ -95,7 +95,7 @@ def wait_for_videos(videosFolder):
         file = wait_for_video(videosFolder, 3600 * 354, 1)
 
         if file is None:
-            break
+            continue
 
         result = intruderDetector.processFile(file)
 
@@ -111,7 +111,7 @@ if args.get("clear_slack_files",False):
     slack = Slack(args.get("slack_config_path"))
     slack.clearFiles()
 elif not args.get("input", False):
-    print("[INFO] Checking for new incoming files")
+    logger.info("[INFO] Checking for new incoming files")
     wait_for_videos(args.get("directory"))
 else:
     file =  args["input"]
