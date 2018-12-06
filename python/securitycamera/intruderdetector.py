@@ -87,13 +87,13 @@ class IntruderDetector(object):
         while True:
             currentFrame = cap.get(cv2.CAP_PROP_POS_FRAMES)
             ret = cap.grab()
-            logger.info("Processing frame number {} out of {} frames".format(currentFrame, totalFrameCount))
+            logger.debug("Processing frame number {} out of {} frames".format(currentFrame, totalFrameCount))
             # update our frame counter
 
             if (not ret):
-                logger.info("Attempting to stop stream")
+                logger.debug("Attempting to stop stream")
                 cap.release()
-                logger.info("Successfully stopped stream")
+                logger.info("Reached end of video file")
                 break
 
             if currentFrame % 20 == 0:
