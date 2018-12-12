@@ -1,5 +1,6 @@
 FROM armindocachada/tensorflow-raspberrypi
 
+RUN pip3 install firebase-admin
 RUN mkdir -p /data/videos/incoming
 #RUN chmod u+x  /etc/init.d/intruder_detection_service
 COPY scripts/intruder_detection_service.sh /etc/init.d/intruder_detection_service
