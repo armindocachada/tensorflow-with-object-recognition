@@ -13,4 +13,4 @@ COPY scripts/start.sh /root/start.sh
 
 COPY credentials /intruder-detector/credentials
 
-ENTRYPOINT ["/root/start.sh"]
+#ENTRYPOINT ["/root/start.sh"]
