@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# just adding a commet
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 mkdir -p ~/camera_latest
