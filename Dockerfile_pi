@@ -2,24 +2,9 @@ FROM armindocachada/tensorflow-raspberrypi
 
 RUN mkdir -p /data/videos/incoming
 #RUN chmod u+x  /etc/init.d/intruder_detection_service
-
-    
-COPY security_camera_object_detection.ipynb /tensorflow/models/research/object_detection/
-RUN jupyter nbconvert --to script /tensorflow/models/research/object_detection/security_camera_object_detection.ipynb
 COPY scripts/intruder_detection_service.sh /etc/init.d/intruder_detection_service
-COPY config.ini /tensorflow/models/research/object_detection/
-
-
 COPY python /intruder-detector/
 COPY credentials /intruder-detector/credentials
-
-
-
-
-
-#COPY scripts/dphys-swapfile_original /etc/dphys-swapfile
-
-#RUN service dphys-swapfile restart
 
 WORKDIR /intruder-detector
 
