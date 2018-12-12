@@ -8,6 +8,7 @@ from firebase_admin import credentials
 
 from slackclient import SlackClient
 import io
+import cv2
 
 class Slack(object):
 
