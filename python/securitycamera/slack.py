@@ -2,6 +2,10 @@ import configparser
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import firebase_admin
+from firebase_admin import credentials
+
+
 from slackclient import SlackClient
 import io
 
@@ -58,7 +62,8 @@ class Slack(object):
                     break
 
     def notifySlack(self, file, image_np, image_no_background):
-        plt.imsave("/tmp/image_with_background.png", image_np)
+        imageRgb = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
+        plt.imsave("/tmp/image_with_background.png", imageRgb)
         plt.imsave("/tmp/image_no_background.png", image_no_background)
         self.sc.api_call(
             "chat.postMessage",

@@ -33,6 +33,8 @@ def setupLogger():
 logger = setupLogger()
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
+
+
 ap.add_argument("-d", "--directory", type=str, default ="/data/videos/incoming",
 	help="path to optional input video directory")
 
@@ -43,8 +45,14 @@ ap.add_argument("-i", "--input", type=str,
 ap.add_argument("-c","--clear-slack-files", action='store_true',
 	help="clears files in slack")
 
-ap.add_argument("-slack", "--slack-config-path", type=str, default="./config.ini",
+ap.add_argument("-slack", "--slack-credentials", type=str, default="config.ini",
 	help="path to optional slack configuration")
+
+ap.add_argument("-firebase", "--firebase-credentials", type=str, default="firebase_credentials.json",
+	help="path to optional slack configuration")
+
+ap.add_argument("-credentials", "--credentials-path", type=str, default="./credentials",
+	help="path to optional folder for credentials")
 
 ap.add_argument("-s", "--skip-frames", type=int, default=30,
 	help="# of skip frames between detections")
@@ -79,41 +87,51 @@ def wait_for_video(directory, time_limit=3600, check_interval=60):
     return None
 
 
+
 def isValidVideoFile(file):
+    if not os.path.exists(file):
+        return False
     cap = cv2.VideoCapture(file)
     totalFrameCount = cap.get(cv2.CAP_PROP_FRAME_COUNT)
     cap.release()
     return totalFrameCount > 0
 
+
 def moveVideoToArchive(file):
     open(file + '.processed', 'w').close()
 
-def wait_for_videos(videosFolder):
-    intruderDetector = IntruderDetector(args.get("slack_config_path"))
+def wait_for_videos(slackCredentialsConfigPath, firebaseCredentialsPath, videosFolder):
+    intruderDetector = IntruderDetector(slackCredentialsConfigPath, firebaseCredentialsPath)
     while True:
+        try:
+            file = wait_for_video(videosFolder, 3600 * 354, 1)
 
-        file = wait_for_video(videosFolder, 3600 * 354, 1)
+            if file is None:
+                continue
 
-        if file is None:
-            continue
+            result = intruderDetector.processFile(file)
 
-        result = intruderDetector.processFile(file)
-
-        if result:
-            moveVideoToArchive(file)
+            if result:
+                moveVideoToArchive(file)
+        except ValueError:
+            logger.error(ValueError)
 
 
 
 logger.info("OpenCV version :  {0}".format(cv2.__version__))
 # if a video path was not supplied, search for files in the given
 # folder
+credentialsPath = args.get("credentials_path")
+slackCredentialsConfigPath = "{}/{}".format(credentialsPath, args.get("slack_credentials") )
+firebaseCredentialsPath = "{}/{}".format(credentialsPath, args.get("firebase_credentials") )
+
 if args.get("clear_slack_files",False):
-    slack = Slack(args.get("slack_config_path"))
+    slack = Slack(args.get(slackCredentialsConfigPath))
     slack.clearFiles()
 elif not args.get("input", False):
     logger.info("[INFO] Checking for new incoming files")
-    wait_for_videos(args.get("directory"))
+    wait_for_videos(slackCredentialsConfigPath,firebaseCredentialsPath, args.get("directory"))
 else:
     file =  args["input"]
-    intruderDetector = IntruderDetector(args.get("slack_config_path"),debug=True)
+    intruderDetector = IntruderDetector(slackCredentialsConfigPath,firebaseCredentialsPath, debug=True)
     intruderDetector.processFile(file)

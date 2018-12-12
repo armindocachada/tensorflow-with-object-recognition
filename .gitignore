@@ -4,3 +4,4 @@ example_videos
 config.ini
 __pycache__
 *ssdlite*
+firebase_credentials.json

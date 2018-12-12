@@ -4,6 +4,8 @@ from securitycamera.videoutils import VideoUtils
 import cv2
 import logging
 import imutils
+import os
+from securitycamera.firebase import Firebase
 from securitycamera.motiondetector import MotionDetector
 from securitycamera.tensorflowdetector import TensorflowDetector
 from securitycamera.tracking import Tracker
@@ -13,7 +15,7 @@ logger = logging.getLogger('security_camera')
 class IntruderDetector(object):
 
 
-    def __init__(self, slackConfigPath, debug=False):
+    def __init__(self, slackConfigPath, firebaseCredentialsPath, debug=False):
         self.motionDetector = MotionDetector()
         self.detector = TensorflowDetector()
         self.debug = debug
@@ -21,13 +23,17 @@ class IntruderDetector(object):
         logger.info("Slack config path: {}".format(slackConfigPath))
         self.slack = Slack(slackConfigPath)
 
+        logger.info("Firebase credentials  path: {}".format(firebaseCredentialsPath))
+
+        if (firebaseCredentialsPath and os.path.isfile(firebaseCredentialsPath)):
+            # setting up firebase admin config to push training files
+            logger.info("Setting up firebase admin config to push detection images with %s" % firebaseCredentialsPath)
+            self.firebase = Firebase(firebaseCredentialsPath)
+        else:
+            logger.info("No firebase credentatials file provided. No images will be uploaded to the cloud.")
+
     # blocks until it finds the next video to analyse
 
-    def isValidVideoFile(file):
-        cap = cv2.VideoCapture(file)
-        totalFrameCount = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-        cap.release()
-        return totalFrameCount > 0
 
     def drawBoundingBoxes(self, frameColor, boundingBoxes, boxColor):
         for (xmin, ymin, xmax, ymax ) in boundingBoxes:
@@ -67,6 +73,10 @@ class IntruderDetector(object):
         #apply gaussian blur
         #gray = cv2.GaussianBlur(gray, (21, 21), 0)
         return (frame, resizedFrame, gray)
+
+    def generateImageName(self, filePath, frameNumber):
+        imageName = "{}.{}.png".format(os.path.basename(filePath), frameNumber)
+        return imageName
 
     def processFile(self, file):
         # start the frames per second throughput estimator
@@ -118,7 +128,11 @@ class IntruderDetector(object):
                     self.drawBoundingBoxes(resizedFrameColor, boundingBoxesMotion, (0, 255, 0))
                     self.drawBoundingBoxes(resizedFrameColor, boundingBoxesDetector, (255, 0, 0))
 
-                    self.slack.notifySlack(file, resizedFrameColor, bsFrame)
+                    #self.slack.notifySlack(file, resizedFrameColor, bsFrame)
+                    # for training of model
+                    # we upload to firebase if feature enabled
+                    if self.firebase:
+                        self.firebase.uploadImageForTraining(self.generateImageName(file,currentFrame), frame, resizedFrameColor, boundingBoxesMotion)
                     break;
             # update frame count
             # fps.update()
@@ -132,9 +146,6 @@ class IntruderDetector(object):
 
 
 
-
-        # close any open windows
-        #cv2.destroyAllWindows()
         cap.release()
         # fps.stop()
         #print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))

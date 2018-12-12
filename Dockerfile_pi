@@ -11,7 +11,7 @@ COPY config.ini /tensorflow/models/research/object_detection/
 
 
 COPY python /intruder-detector/
-COPY config.ini /intruder-detector
+COPY credentials /intruder-detector/credentials
 
 
 
