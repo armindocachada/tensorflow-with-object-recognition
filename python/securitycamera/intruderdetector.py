@@ -128,7 +128,7 @@ class IntruderDetector(object):
                     self.drawBoundingBoxes(resizedFrameColor, boundingBoxesMotion, (0, 255, 0))
                     self.drawBoundingBoxes(resizedFrameColor, boundingBoxesDetector, (255, 0, 0))
 
-                    #self.slack.notifySlack(file, resizedFrameColor, bsFrame)
+                    self.slack.notifySlack(file, resizedFrameColor, bsFrame)
                     # for training of model
                     # we upload to firebase if feature enabled
                     if self.firebase:
