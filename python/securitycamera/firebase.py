@@ -6,6 +6,7 @@ import cv2
 import json
 import logging
 import json
+import os
 
 logger = logging.getLogger('security_camera')
 class Firebase(object):
@@ -64,6 +65,9 @@ class Firebase(object):
         logger.info('File {} uploaded to {}.'.format(
             source_file_name,
             destination_blob_name))
+        # delete file now that we have uploaded it
+        os.remove(source_file_name)
+        logger.debug("deleted temporary file {}".format(source_file_name))
 
         # create json with bounding boxes and classes default to person
         dataJson = {}
@@ -78,3 +82,18 @@ class Firebase(object):
 
         blob = bucket.blob("{}/{}.json".format(self.folderName, imageName))
         blob.upload_from_filename(boundingBoxesJsonPath)
+
+        # delete file now that we have uploaded it
+        os.remove(boundingBoxesJsonPath)
+        logger.debug("deleted temporary file {}".format(boundingBoxesJsonPath))
+
+
+    # returns a list of images that are ready to use for training
+    def downloadImagesForTraining(self, destDirPath):
+             bucket = storage.bucket()
+             prefix = "cleansed/"
+             blobs = bucket.list_blobs(prefix=prefix, delimiter=None)
+
+             for blob in blobs:
+                 filePath = destDirPath +"/"+ blob.name.replace(prefix,"")
+                 blob.download_to_filename(filePath)

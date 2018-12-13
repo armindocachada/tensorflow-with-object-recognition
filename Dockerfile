@@ -12,5 +12,6 @@ RUN chmod u+x  /etc/init.d/intruder_detection_service
 COPY scripts/start.sh /root/start.sh
 
 COPY credentials /intruder-detector/credentials
+RUN mkdir -p /data/training
 
 #ENTRYPOINT ["/root/start.sh"]

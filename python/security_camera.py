@@ -4,10 +4,10 @@ import argparse
 import time
 import os
 import logging
-
+from securitycamera.firebase import Firebase
 from securitycamera.slack import Slack
 from securitycamera.intruderdetector import IntruderDetector
-
+from securitycamera.training import Training
 
 
 def setupLogger():
@@ -41,6 +41,11 @@ ap.add_argument("-d", "--directory", type=str, default ="/data/videos/incoming",
 ap.add_argument("-i", "--input", type=str,
 	help="path to optional input video file")
 
+ap.add_argument("-download", "--download-training", type=str,
+	help="download training files")
+
+ap.add_argument("-training", "--training", type=str,
+	help="start training")
 
 ap.add_argument("-c","--clear-slack-files", action='store_true',
 	help="clears files in slack")
@@ -113,8 +118,8 @@ def wait_for_videos(slackCredentialsConfigPath, firebaseCredentialsPath, videosF
 
             if result:
                 moveVideoToArchive(file)
-        except ValueError:
-            logger.error(ValueError)
+        except FileNotFoundError as e:
+            logger.error(e)
 
 
 
@@ -128,7 +133,17 @@ firebaseCredentialsPath = "{}/{}".format(credentialsPath, args.get("firebase_cre
 if args.get("clear_slack_files",False):
     slack = Slack(args.get(slackCredentialsConfigPath))
     slack.clearFiles()
+elif args.get("training", False):
+    trainingDir = args.get("training")
+    training = Training(trainingDir)
+    print("Get training")
+elif args.get("download_training", False):
+    destDir = args.get("download_training")
+    firebase = Firebase(firebaseCredentialsPath)
+    firebase.downloadImagesForTraining( destDir)
+    print("Download training")
 elif not args.get("input", False):
+    print("checking for new files")
     logger.info("[INFO] Checking for new incoming files")
     wait_for_videos(slackCredentialsConfigPath,firebaseCredentialsPath, args.get("directory"))
 else:
