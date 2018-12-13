@@ -87,7 +87,9 @@ class TensorflowDetector(object):
     def detectPerson(self, frame):
         (im_height,im_width) = frame.shape[:2]
         #image_np = self.load_image_into_numpy_array(frame)
-        image_np_expanded = np.expand_dims(frame, axis=0)
+        # switch to rgb
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        image_np_expanded = np.expand_dims(rgb, axis=0)
         output_dict = self.run_inference_for_single_image(image_np_expanded, self.detection_graph)
         result = False
         classes = output_dict['detection_classes']
